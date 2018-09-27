@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			
+			body {
+				background-image: url(images/bg.png);
+			}
+			
+			#div {
+				width: 600px;
+				height: 600px;
+				margin: 100px auto;
+				box-shadow: 0 5px 10px gray;
+				background: #fff;
+				border-radius: 20px 20px 0 0;
+        		overflow: hidden;
+			}
+			
+			.div1 {
+				width: 100%;
+				height: 500px;
+				position: relative;
+				
+			}
+			
+			.div2 {
+				width: 100%;
+				height: 100px;
+				overflow: hidden;
+			}
+			
+			ul {
+				width: 600;
+				height: 100%;
+			}
+			
+			img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.div1 li {
+				height: 500px;
+				width: 600px;
+				position: absolute;
+				box-sizing: border-box;
+				padding-bottom: 4px;
+			}
+			
+			.div2 li {
+				height: 100px;
+				width: 200px;
+				float: left;
+				position: relative;
+				box-sizing: border-box;
+				padding: 0 2px 4px 2px;
+				filter: alpha(opacity:60);
+				opacity: 0.6;
+			}
+			
+			.div2 ul {
+				width: 1200px;
+				position: relative;
+			}
+			
+			#btn_L,
+			#btn_R {
+				display: block;
+				width: 50px;
+				height: 40px;
+				border-radius: 0 50% 50% 0;
+				background: #ddd;
+				opacity: 0;
+				box-shadow: 0 0 5px #fff;
+				position: absolute;
+				z-index: 1000;
+				left: 0;
+				top: 225px;
+			}
+			
+			#btn_R {
+				border-radius: 50% 0 0 50%;
+				left: 550px;
+			}
+			
+			#box_L,
+			#box_R {
+				display: block;
+				position: absolute;
+				width: 300px;
+				height: 500px;
+				background: red;
+				opacity: 0;
+				z-index: 100;
+			}
+			
+			#box_R {
+				left: 300px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="div">
+			<div class="div1">
+				<span id="btn_L"></span>
+				<span id="btn_R"></span>
+				<span id="box_L"></span>
+				<span id="box_R">
+					
+				</span>
+				<ul id="big_list">
+					<li style="z-index: 1"><img src="images/1.jpg" alt="" /></li>
+					<li><img src="images/2.jpg" alt="" /></li>
+					<li><img src="images/3.jpg" alt="" /></li>
+					<li><img src="images/4.jpg" alt="" /></li>
+					<li><img src="images/5.jpg" alt="" /></li>
+					<li><img src="images/6.jpg" alt="" /></li>
+				</ul>
+
+			</div>
+			<div class="div2">
+				<ul id="small_list">
+					<li style="opacity:1;filter:alpha(opacity:100)"><img src="images/1.jpg" alt="" /></li>
+					<li><img src="images/2.jpg" alt="" /></li>
+					<li><img src="images/3.jpg" alt="" /></li>
+					<li><img src="images/4.jpg" alt="" /></li>
+					<li><img src="images/5.jpg" alt="" /></li>
+					<li><img src="images/6.jpg" alt="" /></li>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var btn_L = document.getElementById("btn_L");
+			var btn_R = document.getElementById("btn_R");
+			var box_L = document.getElementById("box_L");
+			var box_R = document.getElementById("box_R");
+			
+			btn_L.onmouseover = box_L.onmousemove = function() {
+				move(btn_L,"opacity", 90);
+			}
+			btn_L.onmouseout = box_L.onmouseout = function() {
+				move(btn_L,"opacity",0);
+			}
+			btn_R.onmouseover = box_R.onmouseover = function() {
+				move(btn_R,'opacity',90);
+				
+			}
+			btn_R.onmouseout = box_R.onmouseout = function() {
+				move(btn_R,'opacity',0);
+			}
+			
+			var smallList = document.getElementById("small_list").children;
+			var bigList = document.getElementById("big_list").children;
+			var num = 0;
+			var Nzindex = 1;
+
+			for(var i = 0; i < smallList.length; i++) {
+				smallList[i].index = i;
+				smallList[i].onclick = function() {
+					if(this.index == num) {
+						return
+					} else {
+						num = this.index;
+					}
+					cut();
+
+				}
+				smallList[i].onmouseover = function() {
+					move(this, 'opacity', 100);
+				}
+				smallList[i].onmouseout = function() {
+					move(this, 'opacity', 60);
+				}
+
+			}
+
+			btn_R.onclick = function() {
+				num++;
+				if(num == bigList.length) {
+					num = 0;
+				}
+				cut();
+			}
+
+			btn_L.onclick = function() {
+				num--;
+				if(num == -1) {
+					num = bigList.length - 1;
+				}
+				cut();
+			}
+
+			var timer = null;
+			timer = setInterval(btn_R.onclick,2000);
+			
+			
+			
+			
+			
+			
+
+			function cut() {
+				Nzindex++;
+				bigList[num].style.zIndex = Nzindex;
+				bigList[num].style.height = "0px";
+				move(bigList[num], "height", 500);
+				for(var i = 0; i < smallList.length; i++) {
+
+					smallList[i].style.opacity = 0.6;
+
+				}
+				smallList[num].style.opacity = 1;
+
+				var ul = document.getElementById("small_list");
+				if(num == 0) {
+					move(ul, "left", 0);
+				} else if(num == smallList.length - 1) {
+					move(ul, "left", -(num - 2) * smallList[0].offsetWidth);
+				} else {
+					move(ul, "left", -(num - 1) * smallList[0].offsetWidth);
+				}
+			}
+
+			function getStyle(DOM, name) {
+				if(DOM.currentStyle) {
+					return DOM.currentStyle[name];
+				} else {
+					return getComputedStyle(DOM, false)[name];
+				}
+			}
+
+			function move(DOM, attr, target) {
+				clearInterval(DOM.timer);
+				DOM.timer = setInterval(function() {
+					if(attr == "opacity") {
+						var cur = Math.round(parseFloat(getStyle(DOM, attr)) * 100);
+						console.log(cur)
+					} else {
+						var cur = parseInt(getStyle(DOM, attr));
+					}
+
+					var speed = (target - cur) / 6;
+					speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+					if(cur == target) {
+						clearInterval(DOM.timer);
+					} else {
+						if(attr == "opacity") {
+							DOM.style.filter = "alpha(opacity :" + cur + speed + ")";
+							DOM.style.opacity = (cur + speed) / 100;
+							//console.log(DOM.style.opacity)
+						} else {
+							DOM.style[attr] = cur + speed + "px";
+						}
+					}
+				}, 30)
+
+			}
+			document.getElementById("div").onmouseover = function() {
+				clearInterval(timer);
+			}
+
+			document.getElementById("div").onmouseout = function() {
+				clearInterval(timer);
+				timer = setInterval(btn_R.onclick, 2000);
+			}
+		</script>
+	</body>
+
+</html>
